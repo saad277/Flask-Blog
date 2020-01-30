@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+
+
+{% block body %}
+
+<!-- Page Header -->
+<header class="masthead"
+    style="background-image: url(       {{  url_for("static", filename=     'img/home-bg.jpg' )}}       )">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="site-heading">
+                    <h1>Admin Panel</h1>
+                    <span class="subheading">Made using Flask</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+
+            <h1> Basic Actions </h1>
+
+            <a href="/edit/0">        <button class="btn btn-primary"> Add a new post </button>   </a>
+            <a href="/edit/0">        <button class="btn btn-primary"> Logout </button>   </a>
+
+            <hr>
+
+            <h1> Upload a file </h1>
+
+
+
+            File uploader here
+
+
+            <hr>
+
+
+
+
+            <h2> Manage Posts </h2>
+
+            <!---Fetch using database-->
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for i in posts %}
+
+                    <tr>
+
+                        <td>{{i.sno}}</td>
+                        <td>{{i.title}}</td>
+                        <td>{{i.date}}</td>
+                        <td> <a href="/edit/{{i.sno}}"> <button class="btn btn-primary "> Edit </button> </a> </td>
+                        <td> <button class="btn btn-primary "> Delete </button> </td>
+                    </tr>
+
+                    {% endfor %}
+
+
+
+                </tbody>
+            </table>
+
+
+
+
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock  %}
