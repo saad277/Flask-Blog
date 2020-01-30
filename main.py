@@ -9,9 +9,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from datetime import datetime
 import json
-
+import os
+from werkzeug.utils import secure_filename        #for better security 
+import math
 local_server=True
-with open("config.json","r") as c:
+
+with open("config.json","r") as c:      #reading from config(json) file
     params=json.load(c)["params"]
 
 
@@ -19,7 +22,9 @@ with open("config.json","r") as c:
 
 app=Flask(__name__);
 
-app.secret_key="super key ";
+app.secret_key="super key ";    #flask requires secret key
+
+app.config["UPLOAD_FOLDER"]=params["upload_location"]
 
 app.config.update(
 
@@ -67,6 +72,39 @@ class Posts(db.Model):
 @app.route('/')
 
 def home():
+    #pagination
+    #query database for posts
+    #posts=Posts.query.filter_by().all()
+    #[0:params["no_of_posts"]]
+    #last=math.floor(len(posts)/int(params["no_of_posts"]));
+
+    
+    #page=request.args.get("page");
+    #if(not str(page).isnumeric()):
+        #page=1
+
+    #posts=posts[(page-1)*int(params["no_of_posts"]):(page-1)*int(params["no_of_posts"])+int(params["no_of_posts"])]
+    #First
+    #if(page==1):
+        #prev="#";
+        #next1="/?page="+str(page+1)
+    #elif(page==last):
+        #next1="#";
+        #prev="/?page="+str(page-1)
+    #else:
+        #prev="/?page="+str(page-1)
+        #prev="/?page="+str(page+1)
+        
+  
+    
+    #Middle
+    #prev=page-1
+    #next=page+1
+    #Last
+    #prev=page-1
+    #next=_#
+
+    
     #query database for posts
     posts=Posts.query.filter_by().all()[0:params["no_of_posts"]]                 #fetching specified number of posts
     return render_template("index.html",params=params,posts=posts);   #this is response to client
@@ -116,6 +154,8 @@ def edit(sno):
                 new_post=Posts(title=box_title,slug=slug,content=content,tagline=tagline,img_file=img_file,date=date);
                 db.session.add(new_post);
                 db.session.commit();
+                
+                
 
             #This will edit existing post 
             else:
@@ -137,6 +177,33 @@ def edit(sno):
 
         post=Posts.query.filter_by(sno=sno).first();    
         return render_template("edit.html",params=params,post=post)
+
+
+@app.route("/upload",methods=["GET","POST"])
+
+def uploader():
+    if("user" in session and session["user"]==params["admin_user"]):
+        if(request.method=="POST"):
+            f=request.files["file"];
+            f.save(os.path.join(app.config["UPLOAD_FOLDER"],secure_filename(f.filename)))
+            print("successful");
+            return "Successful";
+
+
+
+@app.route("/logout")
+def logout():
+    session.pop("user");
+    return redirect("/dashboard")
+
+
+@app.route("/delete/<string:sno>",methods=["GET","POST"])
+def delete(sno):
+    if("user" in session and session["user"]==params["admin_user"]):
+        post=Posts.query.filter_by(sno=sno).first();
+        db.session.delete(post);
+        db.session.commit();
+        return redirect("/dashboard")
 
 
 @app.route("/contact",methods=["GET","POST"])

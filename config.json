@@ -11,11 +11,12 @@
 "gmail-user":"saad99ie@gmail.com",
 "gmail-password":"<password>",
 "about_text":"This is made using flask . ",
-"no_of_posts":2,
+"no_of_posts":4,
 "blog_name":"Clean Blog",
 "login_img":"bootstrap-solid.svg",
 "admin_user":"neutron",
-"admin_pass":"123456"
+"admin_pass":"123456",
+"upload_location":"C:\\Users\\Saad-277\\Desktop\\Flask-Blog-master"
 
 
 
